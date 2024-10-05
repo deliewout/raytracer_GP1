@@ -1,0 +1,9 @@
+# ninja log v5
+15	572	7498408165345549	project/CMakeFiles/GP1_Raytracer.dir/src/Matrix.cpp.obj	db28aac7e04d7896
+39	574	7498408165335472	project/CMakeFiles/GP1_Raytracer.dir/src/Vector3.cpp.obj	20ec9b85a629aa86
+45	574	7498408165335472	project/CMakeFiles/GP1_Raytracer.dir/src/Vector4.cpp.obj	6bc7b5b732ace050
+32	1063	7498408170225894	project/CMakeFiles/GP1_Raytracer.dir/src/Timer.cpp.obj	42f69fcceb9d2a24
+8	1180	7498408171420295	project/CMakeFiles/GP1_Raytracer.dir/src/main.cpp.obj	180f65fd9884b86e
+20	1210	7498408171728973	project/CMakeFiles/GP1_Raytracer.dir/src/Renderer.cpp.obj	9c5ad2969a40afd
+26	1226	7498408171874771	project/CMakeFiles/GP1_Raytracer.dir/src/Scene.cpp.obj	c6a6ff01b973ba1b
+1226	1901	7498408175674317	project/GP1_Raytracer.exe	504c3b231f2368d4
