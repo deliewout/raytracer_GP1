@@ -39,7 +39,6 @@ void Renderer::Render(Scene* pScene) const
 			Vector3 rayDirection{ (2 * ((px+0.5f) / m_Width) - 1) * aspectRatio*FOV,(1 - (2 * ((py+0.5f)) / m_Height))*FOV,1 };
 			rayDirection.Normalize();
 			const Matrix cameraToWorld = camera.CalculateCameraToWorld();
-			;
 			
 			//Ray hitRay{ {0,0,0},rayDirection };
 			//ColorRGB finalColor{ rayDirection.x, rayDirection.y, rayDirection.z };
@@ -53,7 +52,21 @@ void Renderer::Render(Scene* pScene) const
 
 			if (closestHit.didHit)
 			{
+				const Vector3 offset{ closestHit.origin + closestHit.normal };
+				
 				finalColor = materials[closestHit.materialIndex]->Shade();
+
+				for (const Light& currentLight : lights)
+				{
+					Vector3 lightDirection{ LightUtils::GetDirectionToLight(currentLight,closestHit.origin) };
+					float maxDistance{ lightDirection.Normalize() };
+
+					Ray lightRay{ offset,lightDirection,0.0001f,maxDistance };
+					if (pScene->DoesHit(lightRay))
+					{
+						finalColor *= 0.5f;
+					}
+				}
 			}
 
 			//float gradient = px / static_cast<float>(m_Width);

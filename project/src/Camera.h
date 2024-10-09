@@ -5,6 +5,7 @@
 #include "Maths.h"
 #include "Timer.h"
 
+
 namespace dae
 {
 	struct Camera
@@ -32,12 +33,14 @@ namespace dae
 		Matrix cameraToWorld{};
 
 		const float movementSpeed{ 10.0f };
-		const float rotationSpeed{ M_PI / 90 };
+		const float rotationSpeed{ M_PI / 45 };
+		Matrix rotationMatrix;
 
 		Matrix CalculateCameraToWorld()
 		{
 			//todo: W2
 			Vector3 worldUp{ 0,1,0 };
+
 			right = Vector3::Cross(worldUp, forward);
 			right.Normalized();
 			up = Vector3::Cross(forward, right);
@@ -74,8 +77,18 @@ namespace dae
 			//Mouse Input
 			int mouseX{}, mouseY{};
 			const uint32_t mouseState = SDL_GetRelativeMouseState(&mouseX, &mouseY);
-
-			//Matrix rotationMatrix
+			if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT))
+			{
+				totalPitch += -mouseY * deltaTime * rotationSpeed;
+			}
+			else if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
+			{
+				totalYaw+= mouseX * deltaTime * rotationSpeed;
+			}
+			
+			rotationMatrix = Matrix::CreateRotation(Vector3{ totalPitch,totalYaw,0 });
+			forward = rotationMatrix.TransformVector(Vector3::UnitZ);
+			forward.Normalize();
 			//todo: W2
 			//throw std::runtime_error("Not Implemented Yet");
 		}

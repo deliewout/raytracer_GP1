@@ -15,29 +15,32 @@ namespace dae
 			//throw std::runtime_error("Not Implemented Yet");
 			if (!ignoreHitRecord)
 			{
-				float A = Vector3::Dot(ray.direction,ray.direction);
+				float A = Vector3::Dot(ray.direction, ray.direction);
 				float B = Vector3::Dot((2 * ray.direction), (ray.origin - sphere.origin));
 				float C = Vector3::Dot(ray.origin - sphere.origin, ray.origin - sphere.origin) - pow(sphere.radius, 2);
-				float D = sqrt(pow(B, 2) - (4 * A * C));
-				
+				float D = pow(B, 2) - (4 * A * C);
+
 				if (D > 0)
 				{
-					//float t = (-B + D) / (2 * A);
-					if (hitRecord.t < ray.min&& hitRecord.t > ray.max)
+					float t = (-B - sqrtf(D)) / (2 * A);
+
+					if (t > ray.max || t < ray.min)
 					{
-						hitRecord.t = (-B + D) / (2 * A);
+						return false;
+
 					}
-					else
+					if (hitRecord.t < t)
 					{
-						hitRecord.t = (-B - D) / (2 * A);
+						return false;
 					}
 					hitRecord.origin = ray.origin + hitRecord.t * ray.direction;
 					hitRecord.didHit = true;
 					hitRecord.materialIndex = sphere.materialIndex;
+					hitRecord.t = t;
 					return true;
-					
+
 				}
-				
+
 			}
 			return false;
 		}
@@ -57,7 +60,7 @@ namespace dae
 			const float t = Vector3::Dot((plane.origin - ray.origin), plane.normal) / Vector3::Dot(ray.direction, plane.normal);
 			//hitRecord.t = ();
 			//if()
-			if (t > ray.min&&t<ray.max)
+			if (t > ray.min && t < ray.max)
 			{
 				if (t < hitRecord.t)
 				{
@@ -69,7 +72,7 @@ namespace dae
 				}
 
 			}
-			
+
 			return false;
 		}
 
@@ -116,7 +119,15 @@ namespace dae
 		inline Vector3 GetDirectionToLight(const Light& light, const Vector3 origin)
 		{
 			//todo W3
-			throw std::runtime_error("Not Implemented Yet");
+			switch (light.type)
+			{
+			case LightType::Point:
+				return light.origin - origin;
+				break;
+			case LightType::Directional:
+				return -light.direction;
+				break;
+			}
 			return {};
 		}
 
