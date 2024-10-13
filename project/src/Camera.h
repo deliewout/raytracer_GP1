@@ -32,7 +32,7 @@ namespace dae
 
 		Matrix cameraToWorld{};
 
-		const float movementSpeed{ 10.0f };
+		const float movementSpeed{ 5.0f };
 		const float rotationSpeed{ M_PI / 45 };
 		Matrix rotationMatrix;
 

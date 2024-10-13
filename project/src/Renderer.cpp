@@ -10,6 +10,8 @@
 #include "Scene.h"
 #include "Utils.h"
 
+#include <iostream>
+
 using namespace dae;
 
 Renderer::Renderer(SDL_Window * pWindow) :
@@ -58,14 +60,23 @@ void Renderer::Render(Scene* pScene) const
 
 				for (const Light& currentLight : lights)
 				{
-					Vector3 lightDirection{ LightUtils::GetDirectionToLight(currentLight,closestHit.origin) };
-					float maxDistance{ lightDirection.Normalize() };
+					Vector3 lightDirection{ LightUtils::GetDirectionToLight(currentLight,offset) };
+					//float maxDistance{ lightDirection.Normalize() };
 
-					Ray lightRay{ offset,lightDirection,0.0001f,maxDistance };
-					if (pScene->DoesHit(lightRay))
+					Ray lightRay{ offset,lightDirection.Normalized(),0.0001f,lightDirection.Magnitude()};
+					if (m_ShadowsEnabled)
 					{
-						finalColor *= 0.5f;
+						if (pScene->DoesHit(lightRay))
+						{
+							finalColor *= 0.5f;
+						}
+						else if(!pScene->DoesHit(lightRay))
+						{
+							continue;
+						}
+						//Vector3 ObservedArea{}
 					}
+
 				}
 			}
 
@@ -93,4 +104,29 @@ void Renderer::Render(Scene* pScene) const
 bool Renderer::SaveBufferToImage() const
 {
 	return SDL_SaveBMP(m_pBuffer, "RayTracing_Buffer.bmp");
+}
+
+void dae::Renderer::CycleLightingMode()
+{
+	int currentLightingMode = static_cast<int>(m_CurrentLightingMode);
+	int maxLightingMode{ static_cast<int>(LightingMode::Combined) + 1 };
+
+	m_CurrentLightingMode = static_cast<LightingMode>(++currentLightingMode % maxLightingMode);
+
+	if (m_CurrentLightingMode == LightingMode::ObservedArea)
+	{
+		std::cout << "observedarea"<<std::endl;
+	}
+	if (m_CurrentLightingMode == LightingMode::BRDF)
+	{
+		std::cout << "BRDF" << std::endl;
+	}
+	if (m_CurrentLightingMode == LightingMode::Combined)
+	{
+		std::cout << "Combined" << std::endl;
+	}
+	if (m_CurrentLightingMode == LightingMode::Radiance)
+	{
+		std::cout << "Radiance" << std::endl;
+	}
 }

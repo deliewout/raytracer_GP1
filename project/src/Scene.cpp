@@ -32,20 +32,12 @@ namespace dae {
 		//std::vector<float> listOfHits;
 		for (const Sphere& sphere : m_SphereGeometries)
 		{
-			//listOfHits.push_back(GeometryUtils::HitTest_Sphere(sphere, ray,closestHit,true));
 			GeometryUtils::HitTest_Sphere(sphere, ray, closestHit);
-			//closestHit.t=ray.
 		}
 		for (const Plane& plane : m_PlaneGeometries)
 		{
-			//listOfHits.push_back(GeometryUtils::HitTest_Sphere(sphere, ray,closestHit,true));
 			GeometryUtils::HitTest_Plane(plane, ray, closestHit);
-			//closestHit.t=ray.
 		}
-		//std::sort(listOfHits.begin(), listOfHits.end());
-		//closestHit.t = listOfHits[0];
-		//closestHit.didHit = true;
-		//closestHit.
 		//throw std::runtime_error("Not Implemented Yet");
 	}
 
@@ -54,17 +46,13 @@ namespace dae {
 		//todo W2
 		for (const Sphere& sphere : m_SphereGeometries)
 		{
-			//listOfHits.push_back(GeometryUtils::HitTest_Sphere(sphere, ray,closestHit,true));
 			if (GeometryUtils::HitTest_Sphere(sphere, ray))
 				return true;
-			//closestHit.t=ray.
 		}
 		for (const Plane& plane : m_PlaneGeometries)
 		{
-			//listOfHits.push_back(GeometryUtils::HitTest_Sphere(sphere, ray,closestHit,true));
 			if (GeometryUtils::HitTest_Plane(plane, ray))
 				return true;
-			//closestHit.t=ray.
 		}
 		//throw std::runtime_error("Not Implemented Yet");
 		return false;

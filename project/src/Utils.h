@@ -11,10 +11,6 @@ namespace dae
 		//SPHERE HIT-TESTS
 		inline bool HitTest_Sphere(const Sphere& sphere, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
-			//todo W1
-			//throw std::runtime_error("Not Implemented Yet");
-			if (!ignoreHitRecord)
-			{
 				float A = Vector3::Dot(ray.direction, ray.direction);
 				float B = Vector3::Dot((2 * ray.direction), (ray.origin - sphere.origin));
 				float C = Vector3::Dot(ray.origin - sphere.origin, ray.origin - sphere.origin) - pow(sphere.radius, 2);
@@ -24,25 +20,26 @@ namespace dae
 				{
 					float t = (-B - sqrtf(D)) / (2 * A);
 
-					if (t > ray.max || t < ray.min)
+					if (t < ray.min)
 					{
-						return false;
+						float t = (-B + sqrtf(D)) / (2 * A);
+						//return false;
 
 					}
-					if (hitRecord.t < t)
+					if (t > ray.min && t < ray.max)
 					{
-						return false;
+						if (!ignoreHitRecord)
+						{
+							hitRecord.t = t;
+							hitRecord.didHit = true;
+							hitRecord.materialIndex = sphere.materialIndex;
+							hitRecord.origin = ray.origin + hitRecord.t * ray.direction;
+							hitRecord.normal = hitRecord.origin - sphere.origin;
+						}
+						return true;
 					}
-					hitRecord.origin = ray.origin + hitRecord.t * ray.direction;
-					hitRecord.didHit = true;
-					hitRecord.materialIndex = sphere.materialIndex;
-					hitRecord.t = t;
-					return true;
-
 				}
-
-			}
-			return false;
+				return false;
 		}
 
 		inline bool HitTest_Sphere(const Sphere& sphere, const Ray& ray)
