@@ -89,8 +89,6 @@ namespace dae
 			rotationMatrix = Matrix::CreateRotation(Vector3{ totalPitch,totalYaw,0 });
 			forward = rotationMatrix.TransformVector(Vector3::UnitZ);
 			forward.Normalize();
-			//todo: W2
-			//throw std::runtime_error("Not Implemented Yet");
 		}
 	};
 }

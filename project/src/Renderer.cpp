@@ -32,6 +32,7 @@ void Renderer::Render(Scene* pScene) const
 	float aspectRatio{ static_cast<float>(m_Width) / m_Height };
 	
 	float FOV{ tanf(camera.fovAngle/2) };
+	const Matrix cameraToWorld = camera.CalculateCameraToWorld();
 
 	for (int px{}; px < m_Width; ++px)
 	{
@@ -40,7 +41,7 @@ void Renderer::Render(Scene* pScene) const
 			
 			Vector3 rayDirection{ (2 * ((px+0.5f) / m_Width) - 1) * aspectRatio*FOV,(1 - (2 * ((py+0.5f)) / m_Height))*FOV,1 };
 			rayDirection.Normalize();
-			const Matrix cameraToWorld = camera.CalculateCameraToWorld();
+			
 			
 			//Ray hitRay{ {0,0,0},rayDirection };
 			//ColorRGB finalColor{ rayDirection.x, rayDirection.y, rayDirection.z };
@@ -54,7 +55,7 @@ void Renderer::Render(Scene* pScene) const
 
 			if (closestHit.didHit)
 			{
-				const Vector3 offset{ closestHit.origin + closestHit.normal };
+				const Vector3 offset{ closestHit.origin + closestHit.normal*0.001f };
 				
 				finalColor = materials[closestHit.materialIndex]->Shade();
 
@@ -64,25 +65,40 @@ void Renderer::Render(Scene* pScene) const
 					//float maxDistance{ lightDirection.Normalize() };
 
 					Ray lightRay{ offset,lightDirection.Normalized(),0.0001f,lightDirection.Magnitude()};
+
+					const float observedArea{ Vector3::Dot(lightDirection.Normalized(),closestHit.normal) };
+					ColorRGB radiance{ LightUtils::GetRadiance(currentLight,closestHit.origin) };
+					switch (m_CurrentLightingMode)
+					{
+					case dae::Renderer::LightingMode::ObservedArea:
+
+						if (observedArea < 0)
+							continue;
+						finalColor += ColorRGB{ 1.f,1.f,1.f }*observedArea;
+						break;
+					case dae::Renderer::LightingMode::Radiance:
+						finalColor += radiance;
+						break;
+					case dae::Renderer::LightingMode::BRDF:
+						//finalColor+=
+						break;
+					case dae::Renderer::LightingMode::Combined:
+						finalColor += radiance * Vector3::Dot(lightDirection, closestHit.normal);
+						break;
+					}
 					if (m_ShadowsEnabled)
 					{
 						if (pScene->DoesHit(lightRay))
 						{
 							finalColor *= 0.5f;
 						}
-						else if(!pScene->DoesHit(lightRay))
-						{
-							continue;
-						}
-						//Vector3 ObservedArea{}
+						//else if(!pScene->DoesHit(lightRay))
+						//{
+						//	continue;
+						//}
 					}
-
 				}
 			}
-
-			//float gradient = px / static_cast<float>(m_Width);
-			//gradient += py / static_cast<float>(m_Width);
-			//gradient /= 2.0f;
 
 			//ColorRGB finalColor{ gradient,gradient,gradient };
 
@@ -109,7 +125,7 @@ bool Renderer::SaveBufferToImage() const
 void dae::Renderer::CycleLightingMode()
 {
 	int currentLightingMode = static_cast<int>(m_CurrentLightingMode);
-	int maxLightingMode{ static_cast<int>(LightingMode::Combined) + 1 };
+	const int maxLightingMode{ static_cast<int>(LightingMode::Combined) + 1 };
 
 	m_CurrentLightingMode = static_cast<LightingMode>(++currentLightingMode % maxLightingMode);
 

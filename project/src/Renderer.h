@@ -24,7 +24,7 @@ namespace dae
 		bool SaveBufferToImage() const;
 
 		void CycleLightingMode();
-		void ToggleShadows(){}
+		void ToggleShadows() { m_ShadowsEnabled = !m_ShadowsEnabled; }
 
 	private:
 		SDL_Window* m_pWindow{};

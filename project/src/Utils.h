@@ -11,35 +11,37 @@ namespace dae
 		//SPHERE HIT-TESTS
 		inline bool HitTest_Sphere(const Sphere& sphere, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
-				float A = Vector3::Dot(ray.direction, ray.direction);
-				float B = Vector3::Dot((2 * ray.direction), (ray.origin - sphere.origin));
-				float C = Vector3::Dot(ray.origin - sphere.origin, ray.origin - sphere.origin) - pow(sphere.radius, 2);
-				float D = pow(B, 2) - (4 * A * C);
+			Vector3 sphereToOrigin{ ray.origin - sphere.origin };
+			float A = Vector3::Dot(ray.direction, ray.direction);
+			float B = Vector3::Dot((2 * ray.direction), sphereToOrigin);
+			float C = Vector3::Dot(sphereToOrigin, sphereToOrigin) - Square(sphere.radius);
+			float D = Square(B) - (4 * A * C);
 
-				if (D > 0)
+			if (D > 0)
+			{
+				float t = (-B - sqrtf(D)) / (2 * A);
+				//if(hitrecord)
+
+				if (t < ray.min)
 				{
-					float t = (-B - sqrtf(D)) / (2 * A);
+					t = (-B + sqrtf(D)) / (2 * A);
+					//return true;
 
-					if (t < ray.min)
-					{
-						float t = (-B + sqrtf(D)) / (2 * A);
-						//return false;
-
-					}
-					if (t > ray.min && t < ray.max)
-					{
-						if (!ignoreHitRecord)
-						{
-							hitRecord.t = t;
-							hitRecord.didHit = true;
-							hitRecord.materialIndex = sphere.materialIndex;
-							hitRecord.origin = ray.origin + hitRecord.t * ray.direction;
-							hitRecord.normal = hitRecord.origin - sphere.origin;
-						}
-						return true;
-					}
 				}
-				return false;
+				if (t > ray.min && t < ray.max)
+				{
+					if (!ignoreHitRecord)
+					{
+						hitRecord.t = t;
+						hitRecord.didHit = true;
+						hitRecord.materialIndex = sphere.materialIndex;
+						hitRecord.origin = ray.origin +  ray.direction* hitRecord.t;
+						hitRecord.normal = hitRecord.origin - sphere.origin;
+					}	
+					return true;
+				}
+			}
+			return false;
 		}
 
 		inline bool HitTest_Sphere(const Sphere& sphere, const Ray& ray)
@@ -65,6 +67,7 @@ namespace dae
 					hitRecord.origin = ray.origin + hitRecord.t * ray.direction;
 					hitRecord.didHit = true;
 					hitRecord.materialIndex = plane.materialIndex;
+					hitRecord.normal = plane.normal;
 					return true;
 				}
 
@@ -131,7 +134,16 @@ namespace dae
 		inline ColorRGB GetRadiance(const Light& light, const Vector3& target)
 		{
 			//todo W3
-			throw std::runtime_error("Not Implemented Yet");
+			//throw std::runtime_error("Not Implemented Yet");
+			switch (light.type)
+			{
+			case LightType::Point:
+				return{ light.color * (light.intensity / (light.origin - target).SqrMagnitude()) };
+				break;
+			case LightType::Directional:
+				return light.color * light.intensity;
+				break;
+			}
 			return {};
 		}
 	}

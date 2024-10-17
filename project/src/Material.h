@@ -61,7 +61,7 @@ namespace dae
 		{
 			//todo: W3
 			//throw std::runtime_error("Not Implemented Yet");
-			return {};
+			return BRDF::Lambert(m_DiffuseReflectance,m_DiffuseColor);
 		}
 
 	private:
@@ -86,7 +86,8 @@ namespace dae
 		{
 			//todo: W3
 			//throw std::runtime_error("Not Implemented Yet");
-			return {};
+			return BRDF::Lambert(m_DiffuseReflectance,m_DiffuseColor)
+				+BRDF::Phong(m_SpecularReflectance,m_PhongExponent,l,-v,hitRecord.normal);
 		}
 
 	private:
@@ -111,6 +112,7 @@ namespace dae
 		{
 			//todo: W3
 			//throw std::runtime_error("Not Implemented Yet");
+			//ColorRGB f0{}
 			return {};
 		}
 
