@@ -200,6 +200,12 @@ namespace dae {
 		AddPlane({ 0.f, 10.f, 0.f }, { 0.f, -1.f,0.f }, matLambert_GrayBlue);//TOP
 		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f,-1.f }, matLambert_GrayBlue);//BACK
 
+		//const auto matLambertPhong1{ AddMaterial(new Material_LambertPhong(colors::Blue,0.5f,0.5f,3.f)) };
+		//const auto matLambertPhong2{ AddMaterial(new Material_LambertPhong(colors::Blue,0.5f,0.5f,15.f)) };
+		//const auto matLambertPhong3{ AddMaterial(new Material_LambertPhong(colors::Blue,0.5f,0.5f,50.f)) };
+		//AddSphere({ -1.75f, 1.f, 0.f }, .75f, matLambertPhong1);
+		//AddSphere({ 0.f, 1.f, 0.f }, .75f, matLambertPhong2);
+		//AddSphere({ 1.75f, 1.f, 0.f }, .75f, matLambertPhong3);
 
 		//spheres
 		AddSphere({ -1.75f, 1.f, 0.f }, .75f, matCT_GrayRoughMetal);
@@ -225,5 +231,6 @@ namespace dae {
 		//AddSphere({ 0.75f, 1.f, 0.f }, 1.f, matId_Solid_Blue);
 		//AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f,0.f }, matId_Solid_Yellow);//BACK
 		//AddPointLight(Vector3{ 0.0f,5.f,5.f }, 25.f, colors::White);
+		//AddPointLight(Vector3{ 0.0f,2.5f,-5.f }, 25.f, colors::White);
 	}
 }

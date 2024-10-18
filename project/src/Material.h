@@ -86,8 +86,8 @@ namespace dae
 		{
 			//todo: W3
 			//throw std::runtime_error("Not Implemented Yet");
-			return BRDF::Lambert(m_DiffuseReflectance,m_DiffuseColor)
-				+BRDF::Phong(m_SpecularReflectance,m_PhongExponent,l,-v,hitRecord.normal);
+			return BRDF::Lambert(m_DiffuseReflectance,m_DiffuseColor)+BRDF::Phong(m_SpecularReflectance,m_PhongExponent,l,-v,hitRecord.normal);
+			//return {};
 		}
 
 	private:
@@ -112,8 +112,30 @@ namespace dae
 		{
 			//todo: W3
 			//throw std::runtime_error("Not Implemented Yet");
-			//ColorRGB f0{}
-			return {};
+			ColorRGB f0{};
+			if (m_Metalness <= 1)
+			{
+				f0 = ColorRGB{ 0.04f,0.04f,0.04f };
+			}
+			else
+			{
+				f0 = m_Albedo;
+			}
+			Vector3 h{ (l + v).Normalized() };
+
+			ColorRGB F{ BRDF::FresnelFunction_Schlick(h,v,f0) };
+			ColorRGB D{ BRDF::NormalDistribution_GGX(hitRecord.normal,h,m_Roughness)};
+			ColorRGB G{ BRDF::GeometryFunction_SchlickGGX(hitRecord.normal,v,m_Roughness) };
+			ColorRGB specular{ (D * F * G) / (4 * (Vector3::Dot(v,hitRecord.normal) * Vector3::Dot(l,hitRecord.normal))) };
+
+			ColorRGB diffuse{};
+			if (m_Metalness <= 1)
+			{
+				ColorRGB kd{ ColorRGB{1,1,1} - F };
+				diffuse = BRDF::Lambert(kd,m_Albedo);
+			}
+			return specular+diffuse;
+			//return {};
 		}
 
 	private:

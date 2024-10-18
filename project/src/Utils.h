@@ -11,23 +11,26 @@ namespace dae
 		//SPHERE HIT-TESTS
 		inline bool HitTest_Sphere(const Sphere& sphere, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
+			//uses the analytical solution
 			Vector3 sphereToOrigin{ ray.origin - sphere.origin };
 			float A = Vector3::Dot(ray.direction, ray.direction);
 			float B = Vector3::Dot((2 * ray.direction), sphereToOrigin);
 			float C = Vector3::Dot(sphereToOrigin, sphereToOrigin) - Square(sphere.radius);
 			float D = Square(B) - (4 * A * C);
 
+			//check only if the discriminant is bigger then zero(full intersection), we dont care if the ray just scratches the sphere
+			//because of edge cases
 			if (D > 0)
 			{
 				float t = (-B - sqrtf(D)) / (2 * A);
-				//if(hitrecord)
-
+				//we only will use (-B + sqrtf(D)) / (2 * A) if t
 				if (t < ray.min)
 				{
 					t = (-B + sqrtf(D)) / (2 * A);
-					//return true;
 
 				}
+				//if t bigger then the min length of the ray and smaller then the max length of the ray
+				//check if we want to store information in the hitrecord and return
 				if (t > ray.min && t < ray.max)
 				{
 					if (!ignoreHitRecord)
@@ -54,25 +57,23 @@ namespace dae
 		//PLANE HIT-TESTS
 		inline bool HitTest_Plane(const Plane& plane, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
-			//todo W1
-			//throw std::runtime_error("Not Implemented Yet");
 			const float t = Vector3::Dot((plane.origin - ray.origin), plane.normal) / Vector3::Dot(ray.direction, plane.normal);
-			//hitRecord.t = ();
-			//if()
+
 			if (t > ray.min && t < ray.max)
 			{
 				if (t < hitRecord.t)
 				{
-					hitRecord.t = t;
-					hitRecord.origin = ray.origin + hitRecord.t * ray.direction;
-					hitRecord.didHit = true;
-					hitRecord.materialIndex = plane.materialIndex;
-					hitRecord.normal = plane.normal;
+					if (!ignoreHitRecord)
+					{
+						hitRecord.t = t;
+						hitRecord.origin = ray.origin + hitRecord.t * ray.direction;
+						hitRecord.didHit = true;
+						hitRecord.materialIndex = plane.materialIndex;
+						hitRecord.normal = plane.normal;
+					}
 					return true;
 				}
-
 			}
-
 			return false;
 		}
 

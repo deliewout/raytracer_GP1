@@ -56,8 +56,6 @@ void Renderer::Render(Scene* pScene) const
 			if (closestHit.didHit)
 			{
 				const Vector3 offset{ closestHit.origin + closestHit.normal*0.001f };
-				
-				finalColor = materials[closestHit.materialIndex]->Shade();
 
 				for (const Light& currentLight : lights)
 				{
@@ -65,38 +63,36 @@ void Renderer::Render(Scene* pScene) const
 					//float maxDistance{ lightDirection.Normalize() };
 
 					Ray lightRay{ offset,lightDirection.Normalized(),0.0001f,lightDirection.Magnitude()};
+					if (m_ShadowsEnabled)
+					{
+						if (pScene->DoesHit(lightRay))
+						{
+							//finalColor *= 0.5f;
+							continue;
+						}
+					}
 
-					const float observedArea{ Vector3::Dot(lightDirection.Normalized(),closestHit.normal) };
+					const float observedArea{ Vector3::Dot(lightDirection.Normalized(),closestHit.normal)};
 					ColorRGB radiance{ LightUtils::GetRadiance(currentLight,closestHit.origin) };
+
 					switch (m_CurrentLightingMode)
 					{
 					case dae::Renderer::LightingMode::ObservedArea:
-
 						if (observedArea < 0)
 							continue;
-						finalColor += ColorRGB{ 1.f,1.f,1.f }*observedArea;
+						finalColor += ColorRGB{ observedArea,observedArea,observedArea };
 						break;
 					case dae::Renderer::LightingMode::Radiance:
 						finalColor += radiance;
 						break;
 					case dae::Renderer::LightingMode::BRDF:
-						//finalColor+=
+						finalColor += materials[closestHit.materialIndex]->Shade(closestHit, lightDirection, -rayDirection);
 						break;
 					case dae::Renderer::LightingMode::Combined:
-						finalColor += radiance * Vector3::Dot(lightDirection, closestHit.normal);
+						finalColor += radiance * observedArea*materials[closestHit.materialIndex]->Shade(closestHit, lightDirection, -rayDirection);
 						break;
 					}
-					if (m_ShadowsEnabled)
-					{
-						if (pScene->DoesHit(lightRay))
-						{
-							finalColor *= 0.5f;
-						}
-						//else if(!pScene->DoesHit(lightRay))
-						//{
-						//	continue;
-						//}
-					}
+
 				}
 			}
 
