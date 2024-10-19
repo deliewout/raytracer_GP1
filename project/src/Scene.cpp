@@ -38,6 +38,10 @@ namespace dae {
 		{
 			GeometryUtils::HitTest_Plane(plane, ray, closestHit);
 		}
+		for (const Triangle& Triangle : m_Triangles)
+		{
+			GeometryUtils::HitTest_Triangle(Triangle, ray, closestHit);
+		}
 		//throw std::runtime_error("Not Implemented Yet");
 	}
 
@@ -53,6 +57,10 @@ namespace dae {
 		{
 			if (GeometryUtils::HitTest_Plane(plane, ray))
 				return true;
+		}
+		for (const Triangle& Triangle : m_Triangles)
+		{
+			GeometryUtils::HitTest_Triangle(Triangle, ray);
 		}
 		//throw std::runtime_error("Not Implemented Yet");
 		return false;
@@ -216,7 +224,7 @@ namespace dae {
 		AddSphere({ 1.75f, 3.f, 0.f }, .75f, matCT_GraySmoothPlastic);
 
 		//Lights
-		AddPointLight(Vector3{ 0.0f,5.f,5.f }, 50.f, ColorRGB{ 1.f,.61f,0.45f });
+		AddPointLight(Vector3{ 0.0f,5.f,5.f }, 50.f, ColorRGB{ 1.f,0.61f,0.45f });
 		AddPointLight(Vector3{ -2.5f,5.f,-5.f }, 70.f, ColorRGB{ 1.f,0.8f,0.45f });
 		AddPointLight(Vector3{ 2.5f,2.5f,-5.f }, 50.f, ColorRGB{ 0.34f,0.47f,0.68f });
 
@@ -232,5 +240,32 @@ namespace dae {
 		//AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f,0.f }, matId_Solid_Yellow);//BACK
 		//AddPointLight(Vector3{ 0.0f,5.f,5.f }, 25.f, colors::White);
 		//AddPointLight(Vector3{ 0.0f,2.5f,-5.f }, 25.f, colors::White);
+	}
+	void Scene_W4::Initialize()
+	{
+		m_Camera.origin = { 0.f,1.f,-5.f };
+		m_Camera.fovAngle = 45.f;
+
+		const auto matLambert_GrayBlue{ AddMaterial(new Material_Lambert({0.49f,0.57f,0.57f},1.f)) };
+		const auto matLambert_White{ AddMaterial(new Material_Lambert(colors::White,1.f)) };
+
+		//planes
+		AddPlane({ -5.f, 0.f, 0.f }, { 1.f, 0.f,0.f }, matLambert_GrayBlue);//LEFT
+		AddPlane({ 5.f, 0.f, 0.f }, { -1.f, 0.f,0.f }, matLambert_GrayBlue);//RIGHT
+		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f,0.f }, matLambert_GrayBlue);//BOTTOM
+		AddPlane({ 0.f, 10.f, 0.f }, { 0.f, -1.f,0.f }, matLambert_GrayBlue);//TOP
+		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f,-1.f }, matLambert_GrayBlue);//BACK
+
+		//Triangle (Temp)
+		auto triangle = Triangle{ {-0.75f,0.5f,0.0f},{-0.75f,2.f,.0f},{.75f,.5f,0.f} };
+		triangle.cullMode = TriangleCullMode::NoCulling;
+		triangle.materialIndex = matLambert_White;
+
+		m_Triangles.emplace_back(triangle);
+
+		//Lights
+		AddPointLight(Vector3{ 0.0f,5.f,5.f }, 50.f, ColorRGB{ 1.f,0.61f,0.45f });
+		AddPointLight(Vector3{ -2.5f,5.f,-5.f }, 70.f, ColorRGB{ 1.f,0.8f,0.45f });
+		AddPointLight(Vector3{ 2.5f,2.5f,-5.f }, 50.f, ColorRGB{ 0.34f,0.47f,0.68f });
 	}
 }
