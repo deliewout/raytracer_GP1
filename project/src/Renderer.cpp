@@ -46,7 +46,6 @@ void Renderer::Render(Scene* pScene) const
 			//Ray hitRay{ {0,0,0},rayDirection };
 			//ColorRGB finalColor{ rayDirection.x, rayDirection.y, rayDirection.z };
 
-			//Ray viewRay{ {0,0,0},rayDirection};
 			Ray viewRay{ camera.origin,cameraToWorld.TransformVector(rayDirection) };
 			ColorRGB finalColor{};
 			HitRecord closestHit{};
@@ -62,9 +61,9 @@ void Renderer::Render(Scene* pScene) const
 					Vector3 lightDirection{ LightUtils::GetDirectionToLight(currentLight,offset) };
 					//float maxDistance{ lightDirection.Normalize() };
 
-					Ray lightRay{ offset,lightDirection.Normalized(),0.0001f,lightDirection.Magnitude()};
 					if (m_ShadowsEnabled)
 					{
+						Ray lightRay{ offset,lightDirection.Normalized(),0.0001f,lightDirection.Magnitude() };
 						if (pScene->DoesHit(lightRay))
 						{
 							//finalColor *= 0.5f;
@@ -89,6 +88,8 @@ void Renderer::Render(Scene* pScene) const
 						finalColor += materials[closestHit.materialIndex]->Shade(closestHit, lightDirection, -rayDirection);
 						break;
 					case dae::Renderer::LightingMode::Combined:
+						if (observedArea < 0)
+							continue;
 						finalColor += radiance * observedArea*materials[closestHit.materialIndex]->Shade(closestHit, lightDirection, -rayDirection);
 						break;
 					}
