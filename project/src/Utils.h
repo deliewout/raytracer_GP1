@@ -89,6 +89,48 @@ namespace dae
 		{
 			//todo W5
 			//throw std::runtime_error("Not Implemented Yet");
+			float dot{ Vector3::Dot(triangle.normal,ray.direction) };
+			TriangleCullMode cullingMode{ triangle.cullMode };
+
+			if( dot == 0 )
+				return false;
+
+			if (Vector3::Dot(ray.direction, triangle.normal) != 0)
+			{
+				Vector3 planeOrigin{ (triangle.v0 + triangle.v1 + triangle.v2) / 3.f };
+				Vector3 L{ planeOrigin - ray.origin };
+				float t{ Vector3::Dot(L,triangle.normal) / Vector3::Dot(ray.direction,triangle.normal) };
+
+				if (t < ray.min || t > ray.max)
+					return false;
+
+				Vector3 P{ ray.origin + ray.direction * t };
+				Vector3 e{ triangle.v1 - triangle.v0 };
+				Vector3 p{ P - triangle.v0 };
+				if (Vector3::Dot(Vector3::Cross(e, p), triangle.normal) < 0)
+					return false;
+
+				e = triangle.v2 - triangle.v1;
+				p = P - triangle.v1;
+				if (Vector3::Dot(Vector3::Cross(e, p), triangle.normal) < 0)
+					return false;
+
+				e = triangle.v0 - triangle.v2;
+				p = P - triangle.v2;
+				if (Vector3::Dot(Vector3::Cross(e, p), triangle.normal) < 0)
+					return false;
+				if (!ignoreHitRecord)
+				{
+					hitRecord.t = t;
+					hitRecord.origin = ray.origin + hitRecord.t * ray.direction;
+					hitRecord.didHit = true;
+					hitRecord.materialIndex = triangle.materialIndex;
+					hitRecord.normal = triangle.normal;
+				}
+				return true;
+			}
+
+
 			return false;
 		}
 

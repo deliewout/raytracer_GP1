@@ -85,12 +85,12 @@ void Renderer::Render(Scene* pScene) const
 						finalColor += radiance;
 						break;
 					case dae::Renderer::LightingMode::BRDF:
-						finalColor += materials[closestHit.materialIndex]->Shade(closestHit, lightDirection, -rayDirection);
+						finalColor += materials[closestHit.materialIndex]->Shade();
 						break;
 					case dae::Renderer::LightingMode::Combined:
 						if (observedArea < 0)
 							continue;
-						finalColor += radiance * observedArea*materials[closestHit.materialIndex]->Shade(closestHit, lightDirection, -rayDirection);
+						finalColor += radiance * observedArea*materials[closestHit.materialIndex]->Shade();
 						break;
 					}
 
