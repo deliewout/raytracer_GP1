@@ -39,7 +39,7 @@ namespace dae
 						hitRecord.didHit = true;
 						hitRecord.materialIndex = sphere.materialIndex;
 						hitRecord.origin = ray.origin +  ray.direction* hitRecord.t;
-						hitRecord.normal = hitRecord.origin - sphere.origin;
+						hitRecord.normal = (hitRecord.origin - sphere.origin).Normalized();
 					}	
 					return true;
 				}
@@ -89,14 +89,16 @@ namespace dae
 		{
 			//todo W5
 			//throw std::runtime_error("Not Implemented Yet");
-			float dot{ Vector3::Dot(triangle.normal,ray.direction) };
+			float trianglDot{ Vector3::Dot(triangle.normal,ray.direction) };
 			TriangleCullMode cullingMode{ triangle.cullMode };
 
-			if( dot == 0 )
+			if( trianglDot == 0 )
 				return false;
+			if (trianglDot > 0)
+				cullingMode = TriangleCullMode::BackFaceCulling;
+			if (trianglDot < 0)
+				cullingMode = TriangleCullMode::FrontFaceCulling;
 
-			if (Vector3::Dot(ray.direction, triangle.normal) != 0)
-			{
 				Vector3 planeOrigin{ (triangle.v0 + triangle.v1 + triangle.v2) / 3.f };
 				Vector3 L{ planeOrigin - ray.origin };
 				float t{ Vector3::Dot(L,triangle.normal) / Vector3::Dot(ray.direction,triangle.normal) };
@@ -128,10 +130,6 @@ namespace dae
 					hitRecord.normal = triangle.normal;
 				}
 				return true;
-			}
-
-
-			return false;
 		}
 
 		inline bool HitTest_Triangle(const Triangle& triangle, const Ray& ray)

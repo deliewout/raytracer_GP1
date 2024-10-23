@@ -31,9 +31,12 @@ namespace dae
 		 */
 		static ColorRGB Phong(float ks, float exp, const Vector3& l, const Vector3& v, const Vector3& n)
 		{
-			Vector3 reflect{ Vector3::Reflect(l,n)};
+			Vector3 reflect = Vector3::Reflect(l, n);//{ l-2*(Vector3::Dot(n,l)*n)};
 			float cosAlpha{ Vector3::Dot(reflect,v) };
-			return {ks*powf(cosAlpha,exp)};
+			float p = 0.f;
+			if (cosAlpha > 0)
+				p = ks * powf(cosAlpha, exp);
+			return {p, p, p};
 		}
 
 		/**
@@ -58,7 +61,7 @@ namespace dae
 		static float NormalDistribution_GGX(const Vector3& n, const Vector3& h, float roughness)
 		{
 			const float alpha{ Square(roughness) };
-			return { Square(alpha) / (PI * Square(Square(Vector3::Dot(n,h)) * (Square(alpha) - 1) + 1)) };
+			return {Square(alpha) / (PI * Square(Square(Vector3::Dot(n,h)) * (Square(alpha) - 1) + 1))};
 		}
 
 
@@ -73,7 +76,8 @@ namespace dae
 		{
 			const float alpha{ Square(roughness) };
 			float k{ Square(alpha + 1) / 8 };
-			return { Vector3::Dot(n,v) / (Vector3::Dot(n,v) * (1 - k) + k) };
+			const float dot{ Vector3::Dot(n, v) };
+			return { dot / (dot * (1 - k) + k) };
 		}
 
 		/**

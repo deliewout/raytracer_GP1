@@ -124,14 +124,19 @@ namespace dae
 
 		void CalculateNormals()
 		{
-			throw std::runtime_error("Not Implemented Yet");
+			//throw std::runtime_error("Not Implemented Yet");
+
 		}
 
 		void UpdateTransforms()
 		{
-			throw std::runtime_error("Not Implemented Yet");
+			//throw std::runtime_error("Not Implemented Yet");
 			//Calculate Final Transform 
-			//const auto finalTransform = ...
+			const Matrix finalTransform{ scaleTransform * rotationTransform * translationTransform };
+			const Matrix finalNormal{ rotationTransform * translationTransform };
+
+			transformedPositions.reserve(positions.size());
+			transformedNormals.reserve(normals.size());
 
 			//Transform Positions (positions > transformedPositions)
 			//...

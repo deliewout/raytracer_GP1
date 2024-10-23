@@ -208,17 +208,17 @@ namespace dae {
 		AddPlane({ 0.f, 10.f, 0.f }, { 0.f, -1.f,0.f }, matLambert_GrayBlue);//TOP
 		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f,-1.f }, matLambert_GrayBlue);//BACK
 
-		const auto matLambertPhong1{ AddMaterial(new Material_LambertPhong(colors::Blue,0.5f,0.5f,3.f)) };
-		const auto matLambertPhong2{ AddMaterial(new Material_LambertPhong(colors::Blue,0.5f,0.5f,15.f)) };
-		const auto matLambertPhong3{ AddMaterial(new Material_LambertPhong(colors::Blue,0.5f,0.5f,50.f)) };
-		AddSphere({ -1.75f, 1.f, 0.f }, .75f, matLambertPhong1);
-		AddSphere({ 0.f, 1.f, 0.f }, .75f, matLambertPhong2);
-		AddSphere({ 1.75f, 1.f, 0.f }, .75f, matLambertPhong3);
+		//const auto matLambertPhong1{ AddMaterial(new Material_LambertPhong(colors::Blue,0.5f,0.5f,3.f)) };
+		//const auto matLambertPhong2{ AddMaterial(new Material_LambertPhong(colors::Blue,0.5f,0.5f,15.f)) };
+		//const auto matLambertPhong3{ AddMaterial(new Material_LambertPhong(colors::Blue,0.5f,0.5f,50.f)) };
+		//AddSphere({ -1.75f, 1.f, 0.f }, .75f, matLambertPhong1);
+		//AddSphere({ 0.f, 1.f, 0.f }, .75f, matLambertPhong2);
+		//AddSphere({ 1.75f, 1.f, 0.f }, .75f, matLambertPhong3);
 
 		//spheres
-		//AddSphere({ -1.75f, 1.f, 0.f }, .75f, matCT_GrayRoughMetal);
-		//AddSphere({ 0.f, 1.f, 0.f }, .75f, matCT_GrayMediumMetal);
-		//AddSphere({ 1.75f, 1.f, 0.f }, .75f, matCT_GraySmoothMetal);
+		AddSphere({ -1.75f, 1.f, 0.f }, .75f, matCT_GrayRoughMetal);
+		AddSphere({ 0.f, 1.f, 0.f }, .75f, matCT_GrayMediumMetal);
+		AddSphere({ 1.75f, 1.f, 0.f }, .75f, matCT_GraySmoothMetal);
 		AddSphere({ -1.75f, 3.f, 0.f }, .75f, matCT_GrayRoughPlastic);
 		AddSphere({ 0.f, 3.f, 0.f }, .75f, matCT_GrayMediumPlastic);
 		AddSphere({ 1.75f, 3.f, 0.f }, .75f, matCT_GraySmoothPlastic);
@@ -262,6 +262,16 @@ namespace dae {
 		triangle.materialIndex = matLambert_White;
 
 		m_Triangles.emplace_back(triangle);
+
+		const auto triangleMesh{ AddTriangleMesh(TriangleCullMode::FrontFaceCulling,matLambert_White) };
+		triangleMesh->positions = { {-.75f,-1.f,.0f},{-.75f,1.f,.0f},{.75f,1.f,1.0f},{.75f,-1.f,.0f} };
+		triangleMesh->indices = { 
+			0,1,2,
+			0,2,3 
+		};
+
+		triangleMesh->CalculateNormals();
+		triangleMesh->UpdateTransforms();
 
 		//Lights
 		AddPointLight(Vector3{ 0.0f,5.f,5.f }, 50.f, ColorRGB{ 1.f,0.61f,0.45f });
