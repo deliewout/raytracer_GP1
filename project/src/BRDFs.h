@@ -76,7 +76,7 @@ namespace dae
 		{
 			const float alpha{ Square(roughness) };
 			float k{ Square(alpha + 1) / 8 };
-			const float dot{ Vector3::Dot(n, v) };
+			const float dot{ std::max(Vector3::Dot(n, v),0.f) };
 			return { dot / (dot * (1 - k) + k) };
 		}
 
