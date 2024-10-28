@@ -39,7 +39,7 @@ namespace dae
 						hitRecord.didHit = true;
 						hitRecord.materialIndex = sphere.materialIndex;
 						hitRecord.origin = ray.origin +  ray.direction* hitRecord.t;
-						hitRecord.normal = (hitRecord.origin - sphere.origin).Normalized();
+						hitRecord.normal = (hitRecord.origin - sphere.origin)/*.Normalized()*/;
 					}	
 					return true;
 				}
@@ -88,20 +88,34 @@ namespace dae
 		inline bool HitTest_Triangle(const Triangle& triangle, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
 			//todo W5
-			//throw std::runtime_error("Not Implemented Yet");
-			float trianglDot{ Vector3::Dot(triangle.normal,ray.direction) };
+			//the angle between the nromal of the triangle and the lightray
+			float angleRay{ Vector3::Dot(triangle.normal,ray.direction) };
 			TriangleCullMode cullingMode{ triangle.cullMode };
 
-			if( trianglDot == 0 )
-				return false;
-			if (trianglDot > 0)
-				cullingMode = TriangleCullMode::BackFaceCulling;
-			if (trianglDot < 0)
-				cullingMode = TriangleCullMode::FrontFaceCulling;
+			if (ignoreHitRecord)
+			{
+				if (cullingMode == TriangleCullMode::BackFaceCulling)cullingMode = TriangleCullMode::FrontFaceCulling;
+				else if (cullingMode == TriangleCullMode::FrontFaceCulling)cullingMode = TriangleCullMode::BackFaceCulling;
+			}
+
+			switch (triangle.cullMode)
+			{	
+				//check if the cullmode is backface and if the angle is smaller then 
+			case TriangleCullMode::BackFaceCulling:
+				if (angleRay > 0)
+					return false;
+				break;
+			case TriangleCullMode::FrontFaceCulling:
+				if (angleRay < 0)
+					return false;
+			case TriangleCullMode::NoCulling:
+				if (angleRay == 0)
+					return false;
+			}
 
 				Vector3 planeOrigin{ (triangle.v0 + triangle.v1 + triangle.v2) / 3.f };
 				Vector3 L{ planeOrigin - ray.origin };
-				float t{ Vector3::Dot(L,triangle.normal) / Vector3::Dot(ray.direction,triangle.normal) };
+				float t{ Vector3::Dot(L,triangle.normal) / angleRay };
 
 				if (t < ray.min || t > ray.max)
 					return false;
@@ -121,6 +135,7 @@ namespace dae
 				p = P - triangle.v2;
 				if (Vector3::Dot(Vector3::Cross(e, p), triangle.normal) < 0)
 					return false;
+
 				if (!ignoreHitRecord)
 				{
 					hitRecord.t = t;

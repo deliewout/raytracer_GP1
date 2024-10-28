@@ -38,9 +38,13 @@ namespace dae {
 		{
 			GeometryUtils::HitTest_Plane(plane, ray, closestHit);
 		}
-		for (const Triangle& Triangle : m_Triangles)
+		//for (const Triangle& Triangle : m_Triangles)
+		//{
+		//	GeometryUtils::HitTest_Triangle(Triangle, ray, closestHit);
+		//}
+		for (const TriangleMesh& triangleMesh : m_TriangleMeshGeometries)
 		{
-			GeometryUtils::HitTest_Triangle(Triangle, ray, closestHit);
+			GeometryUtils::HitTest_TriangleMesh(triangleMesh, ray, closestHit);
 		}
 		//throw std::runtime_error("Not Implemented Yet");
 	}
@@ -58,9 +62,15 @@ namespace dae {
 			if (GeometryUtils::HitTest_Plane(plane, ray))
 				return true;
 		}
-		for (const Triangle& Triangle : m_Triangles)
+		//for (const Triangle& Triangle : m_Triangles)
+		//{
+		//	if (GeometryUtils::HitTest_Triangle(Triangle, ray))
+		//		return true;
+		//}
+		for (const TriangleMesh& triangleMesh : m_TriangleMeshGeometries)
 		{
-			GeometryUtils::HitTest_Triangle(Triangle, ray);
+			if (GeometryUtils::HitTest_TriangleMesh(triangleMesh, ray))
+				return true;
 		}
 		//throw std::runtime_error("Not Implemented Yet");
 		return false;
@@ -256,14 +266,14 @@ namespace dae {
 		AddPlane({ 0.f, 10.f, 0.f }, { 0.f, -1.f,0.f }, matLambert_GrayBlue);//TOP
 		AddPlane({ 0.f, 0.f, 10.f }, { 0.f, 0.f,-1.f }, matLambert_GrayBlue);//BACK
 
-		//Triangle (Temp)
-		auto triangle = Triangle{ {-0.75f,0.5f,0.0f},{-0.75f,2.f,.0f},{.75f,.5f,0.f} };
-		triangle.cullMode = TriangleCullMode::NoCulling;
-		triangle.materialIndex = matLambert_White;
+		////Triangle (Temp)
+		//auto triangle = Triangle{ {-0.75f,0.5f,0.0f},{-0.75f,2.f,.0f},{.75f,.5f,0.f} };
+		//triangle.cullMode = TriangleCullMode::NoCulling;
+		//triangle.materialIndex = matLambert_White;
 
-		m_Triangles.emplace_back(triangle);
+		//m_Triangles.emplace_back(triangle);
 
-		const auto triangleMesh{ AddTriangleMesh(TriangleCullMode::FrontFaceCulling,matLambert_White) };
+		const auto triangleMesh{ AddTriangleMesh(TriangleCullMode::NoCulling,matLambert_White) };
 		triangleMesh->positions = { {-.75f,-1.f,.0f},{-.75f,1.f,.0f},{.75f,1.f,1.0f},{.75f,-1.f,.0f} };
 		triangleMesh->indices = { 
 			0,1,2,
