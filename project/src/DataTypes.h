@@ -124,6 +124,22 @@ namespace dae
 
 		void CalculateNormals()
 		{
+			
+			normals.clear();
+			normals.reserve(positions.size()/3);
+			for (int i{}; i < normals.size(); ++i)
+			{
+				Vector3 v0{positions[indices[3*i]]};
+				Vector3 v1{ positions[indices[3*i+1]] };
+				Vector3 v2{ positions[indices[3*i+2]] };
+
+				Vector3 e1{ v1 - v0 };
+				Vector3 e2{ v2 - v0 };
+
+				Vector3 normal = Vector3::Cross(e1, e2);
+				normal.Normalized();
+				normals.push_back(normal);
+			}
 			//throw std::runtime_error("Not Implemented Yet");
 
 		}
@@ -135,14 +151,19 @@ namespace dae
 			const Matrix finalTransform{ scaleTransform * rotationTransform * translationTransform };
 			const Matrix finalNormal{ rotationTransform * translationTransform };
 
+			//changed the type of for loop from an indexed to a ranged based so reserve could be used instead of resize
 			transformedPositions.reserve(positions.size());
 			transformedNormals.reserve(normals.size());
 
-			//Transform Positions (positions > transformedPositions)
-			//...
+			for (const auto& pos : positions)
+			{
+				transformedPositions.emplace_back(finalTransform.TransformPoint(pos));
+			}
+			for (const auto& pos : positions)
+			{
+				transformedNormals.emplace_back(finalNormal.TransformVector(pos));
+			}
 
-			//Transform Normals (normals > transformedNormals)
-			//...
 		}
 	};
 #pragma endregion
