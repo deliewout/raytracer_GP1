@@ -125,20 +125,20 @@ namespace dae
 		void CalculateNormals()
 		{
 			
-			normals.clear();
-			normals.reserve(positions.size()/3);
-			for (int i{}; i < normals.size(); ++i)
+			//normals.clear();
+			normals.reserve(indices.size()/3);
+			for (int i{}; i < indices.size(); i+=3)
 			{
-				Vector3 v0{positions[indices[3*i]]};
-				Vector3 v1{ positions[indices[3*i+1]] };
-				Vector3 v2{ positions[indices[3*i+2]] };
+				Vector3 v0{positions[indices[i]]};
+				Vector3 v1{ positions[indices[i+1]] };
+				Vector3 v2{ positions[indices[i+2]] };
 
 				Vector3 e1{ v1 - v0 };
 				Vector3 e2{ v2 - v0 };
 
 				Vector3 normal = Vector3::Cross(e1, e2);
 				normal.Normalized();
-				normals.push_back(normal);
+				normals.emplace_back(normal);
 			}
 			//throw std::runtime_error("Not Implemented Yet");
 
@@ -155,13 +155,13 @@ namespace dae
 			transformedPositions.reserve(positions.size());
 			transformedNormals.reserve(normals.size());
 
-			for (const auto& pos : positions)
+			for (const Vector3& pos : positions)
 			{
 				transformedPositions.emplace_back(finalTransform.TransformPoint(pos));
 			}
-			for (const auto& pos : positions)
+			for (const Vector3& normal : normals)
 			{
-				transformedNormals.emplace_back(finalNormal.TransformVector(pos));
+				transformedNormals.emplace_back(finalTransform.TransformVector(normal).Normalized());
 			}
 
 		}
