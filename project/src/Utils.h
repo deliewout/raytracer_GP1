@@ -156,9 +156,29 @@ namespace dae
 #pragma region TriangeMesh HitTest
 		inline bool HitTest_TriangleMesh(const TriangleMesh& mesh, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
-			//todo W5
-			//throw std::runtime_error("Not Implemented Yet");
-			return false;
+			Triangle triangle{};
+			triangle.cullMode = mesh.cullMode;
+			triangle.materialIndex = mesh.materialIndex;
+			bool hit{ false };
+			HitRecord tempHitRecord;
+
+			for (int i{}; i < mesh.indices.size(); i+=3)
+			{
+				triangle.v0 = mesh.transformedPositions[mesh.indices[i]];
+				triangle.v1 = mesh.transformedPositions[mesh.indices[i+1]];
+				triangle.v2 = mesh.transformedPositions[mesh.indices[i+2]];
+				//only need one normal per triangle
+				triangle.normal = mesh.transformedNormals[i / 3];
+				if(!HitTest_Triangle(triangle, ray, tempHitRecord, ignoreHitRecord))
+					continue;
+				if (ignoreHitRecord)
+					return true;
+				if (hitRecord.t > tempHitRecord.t)
+					hitRecord = tempHitRecord;
+				hit = true;
+			}
+			
+			return hit;
 		}
 
 		inline bool HitTest_TriangleMesh(const TriangleMesh& mesh, const Ray& ray)
