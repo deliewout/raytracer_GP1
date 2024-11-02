@@ -50,7 +50,8 @@ int main(int argc, char* args[])
 	//const auto pScene = new Scene_W1();
 	//const auto pScene = new Scene_W2();
 	//const auto pScene = new Scene_W3();
-	const auto pScene = new Scene_W4();
+	//const auto pScene = new Scene_W4();
+	const auto pScene = new Scene_W4_TestScene();
 	pScene->Initialize();
 
 	//Start loop
