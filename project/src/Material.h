@@ -126,7 +126,7 @@ namespace dae
 
 			ColorRGB F{ BRDF::FresnelFunction_Schlick(h,v,f0) };
 			ColorRGB D{ ColorRGB{1,1,1}*BRDF::NormalDistribution_GGX(hitRecord.normal,h,m_Roughness) };
-			ColorRGB G{ ColorRGB{1,1,1}*BRDF::GeometryFunction_SchlickGGX(hitRecord.normal,v,m_Roughness) };
+			ColorRGB G{ ColorRGB{1,1,1}*BRDF::GeometryFunction_Smith(hitRecord.normal,v,l,m_Roughness) };
 			ColorRGB specular{ (D * F * G) / (4 * (Vector3::Dot(v,hitRecord.normal) * Vector3::Dot(l,hitRecord.normal))) };
 
 			ColorRGB diffuse{};
@@ -138,7 +138,7 @@ namespace dae
 			}
 			//diffuse = BRDF::Lambert(kd, m_Albedo);
 
-			return diffuse+specular;
+			return specular+diffuse;
 			//return {};
 		}
 
