@@ -175,10 +175,10 @@ namespace dae {
 		//throw std::runtime_error("Not Implemented Yet");
 		Matrix scaleMatrix
 		{
-			{sx,sx,sx,0},
-			{sy,sy,sy,0},
-			{sz,sz,sz,0},
-			{0,0,0,0},
+			{sx,0,0,0},
+			{0,sy,0,0},
+			{0,0,sz,0},
+			{0,0,0,1},
 
 		};
 		return scaleMatrix;

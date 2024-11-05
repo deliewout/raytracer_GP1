@@ -161,7 +161,7 @@ namespace dae
 			}
 			for (const Vector3& normal : normals)
 			{
-				transformedNormals.emplace_back(finalTransform.TransformVector(normal).Normalized());
+				transformedNormals.emplace_back(finalNormal.TransformVector(normal).Normalized());
 			}
 
 		}
