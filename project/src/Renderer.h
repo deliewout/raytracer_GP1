@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include "Matrix.h"
+
 
 struct SDL_Window;
 struct SDL_Surface;
@@ -8,7 +10,7 @@ struct SDL_Surface;
 namespace dae
 {
 	class Scene;
-
+	//class Matrix;
 	class Renderer final
 	{
 	public:
@@ -21,6 +23,9 @@ namespace dae
 		Renderer& operator=(Renderer&&) noexcept = delete;
 
 		void Render(Scene* pScene) const;
+
+		void RenderPixel(Scene* pScene, int pixelIndex, float fov, float aspectRatio, const Matrix cameraToWorld, const Vector3 cameraOrigin)const;
+
 		bool SaveBufferToImage() const;
 
 		void CycleLightingMode();
