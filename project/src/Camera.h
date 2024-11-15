@@ -32,8 +32,8 @@ namespace dae
 
 		Matrix cameraToWorld{};
 
-		const float movementSpeed{ 5.0f };
-		const float rotationSpeed{ M_PI / 60 };
+		const float movementSpeed{ 10.0f };
+		const float rotationSpeed{ M_PI / 20 };
 		Matrix rotationMatrix;
 
 		Matrix CalculateCameraToWorld()
@@ -58,19 +58,19 @@ namespace dae
 			if (pKeyboardState[SDL_SCANCODE_W])
 			{
 				//forward += Matrix::CreateTranslation(Vector3{ 0,0,movementSpeed * deltaTime });
-				origin += Vector3{ 0,0,movementSpeed * deltaTime };
+				origin += forward * (movementSpeed * deltaTime);
 			}
 			else if (pKeyboardState[SDL_SCANCODE_S])
 			{
-				origin -= Vector3{ 0,0,movementSpeed * deltaTime };
+				origin -= forward * (movementSpeed * deltaTime);
 			}
 			else if (pKeyboardState[SDL_SCANCODE_A])
 			{
-				origin -= Vector3{ movementSpeed * deltaTime,0,0 };
+				origin -= right * (movementSpeed * deltaTime);
 			}
 			else if (pKeyboardState[SDL_SCANCODE_D])
 			{
-				origin += Vector3{ movementSpeed * deltaTime,0,0 };
+				origin += right * (movementSpeed * deltaTime);
 			}
 
 
@@ -89,6 +89,11 @@ namespace dae
 			rotationMatrix = Matrix::CreateRotation(Vector3{ totalPitch,totalYaw,0 });
 			forward = rotationMatrix.TransformVector(Vector3::UnitZ);
 			forward.Normalize();
+
+			right = Vector3::Cross(Vector3::UnitY, forward);
+			right.Normalize();
+			up = Vector3::Cross(forward, right);
+			up.Normalize();
 		}
 	};
 }
