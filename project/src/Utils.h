@@ -100,7 +100,7 @@ namespace dae
 
 			switch (triangle.cullMode)
 			{	
-				//check if the cullmode is backface and if the angle is smaller then 
+				//check if the cullmode is backface and if the angle 
 			case TriangleCullMode::BackFaceCulling:
 				if (angleRay > 0)
 					return false;
@@ -114,7 +114,7 @@ namespace dae
 			}
 
 				Vector3 planeOrigin{ (triangle.v0 + triangle.v1 + triangle.v2) / 3.f };
-				Vector3 L{ planeOrigin - ray.origin };
+				Vector3 L{ triangle.v0 - ray.origin };
 				float t{ Vector3::Dot(L,triangle.normal) / angleRay };
 
 				if (t < ray.min || t > ray.max)
@@ -139,7 +139,7 @@ namespace dae
 				if (!ignoreHitRecord)
 				{
 					hitRecord.t = t;
-					hitRecord.origin = ray.origin + hitRecord.t * ray.direction;
+					hitRecord.origin = P;
 					hitRecord.didHit = true;
 					hitRecord.materialIndex = triangle.materialIndex;
 					hitRecord.normal = triangle.normal;
@@ -154,8 +154,34 @@ namespace dae
 		}
 #pragma endregion
 #pragma region TriangeMesh HitTest
+		inline bool SlabTest_TriangleMesh(const TriangleMesh& mesh, const Ray& ray)
+		{
+			float tx1{ (mesh.transformedMinAABB.x - ray.origin.x) / ray.direction.x };
+			float tx2{ (mesh.transformedMaxAABB.x - ray.origin.x) / ray.direction.x };
+
+			float tmin = std::min(tx1, tx2);
+			float tmax = std::max(tx1, tx2);
+
+			float ty1{ (mesh.transformedMinAABB.y - ray.origin.y) / ray.direction.y };
+			float ty2{ (mesh.transformedMaxAABB.y - ray.origin.y) / ray.direction.y };
+
+			tmin = std::min(tmin, std::min(ty1, ty2));
+			tmax = std::max(tmax, std::max(ty1, ty2));
+
+			float tz1{ (mesh.transformedMinAABB.z - ray.origin.z) / ray.direction.z };
+			float tz2{ (mesh.transformedMaxAABB.z - ray.origin.z) / ray.direction.z };
+
+			tmin = std::min(tmin, std::min(tz1, tz2));
+			tmax = std::max(tmax, std::max(tz1, tz2));
+			return tmax > 0 && tmax >= tmin;
+
+		}
 		inline bool HitTest_TriangleMesh(const TriangleMesh& mesh, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
+			if (!SlabTest_TriangleMesh(mesh, ray))
+			{
+				return false;
+			}
 			Triangle triangle{};
 			triangle.cullMode = mesh.cullMode;
 			triangle.materialIndex = mesh.materialIndex;
@@ -187,6 +213,7 @@ namespace dae
 			return HitTest_TriangleMesh(mesh, ray, temp, true);
 		}
 #pragma endregion
+
 	}
 
 	namespace LightUtils

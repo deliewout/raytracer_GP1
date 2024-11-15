@@ -1,9 +1,24 @@
 # ninja log v5
 40	537	7532371560329856	project/CMakeFiles/GP1_Raytracer.dir/src/Vector3.cpp.obj	20ec9b85a629aa86
 16	556	7532371560514997	project/CMakeFiles/GP1_Raytracer.dir/src/Matrix.cpp.obj	db28aac7e04d7896
-47	581	7532371560780901	project/CMakeFiles/GP1_Raytracer.dir/src/Vector4.cpp.obj	6bc7b5b732ace050
 34	1117	7532371566159418	project/CMakeFiles/GP1_Raytracer.dir/src/Timer.cpp.obj	42f69fcceb9d2a24
+47	581	7532371560780901	project/CMakeFiles/GP1_Raytracer.dir/src/Vector4.cpp.obj	6bc7b5b732ace050
 28	1327	7532371568260225	project/CMakeFiles/GP1_Raytracer.dir/src/Scene.cpp.obj	c6a6ff01b973ba1b
 12	1377	7532381144643908	project/CMakeFiles/GP1_Raytracer.dir/src/main.cpp.obj	180f65fd9884b86e
-23	1180	7532381340599456	project/CMakeFiles/GP1_Raytracer.dir/src/Renderer.cpp.obj	9c5ad2969a40afd
 1181	1993	7532381344661300	project/GP1_Raytracer.exe	504c3b231f2368d4
+23	1180	7532381340599456	project/CMakeFiles/GP1_Raytracer.dir/src/Renderer.cpp.obj	9c5ad2969a40afd
+43	755	7533652324652168	project/CMakeFiles/GP1_Raytracer.dir/src/Vector4.cpp.obj	6bc7b5b732ace050
+37	767	7533652324775785	project/CMakeFiles/GP1_Raytracer.dir/src/Vector3.cpp.obj	20ec9b85a629aa86
+19	767	7533652324775785	project/CMakeFiles/GP1_Raytracer.dir/src/Matrix.cpp.obj	db28aac7e04d7896
+12	1322	7533652330320539	project/CMakeFiles/GP1_Raytracer.dir/src/main.cpp.obj	180f65fd9884b86e
+31	1409	7533652331183490	project/CMakeFiles/GP1_Raytracer.dir/src/Scene.cpp.obj	c6a6ff01b973ba1b
+25	1557	7533652332660251	project/CMakeFiles/GP1_Raytracer.dir/src/Renderer.cpp.obj	9c5ad2969a40afd
+1558	2130	7533652334671216	project/GP1_Raytracer.exe	504c3b231f2368d4
+20	939	7533652629649113	project/CMakeFiles/GP1_Raytracer.dir/src/main.cpp.obj	180f65fd9884b86e
+940	1471	7533652631858199	project/GP1_Raytracer.exe	504c3b231f2368d4
+5	1192	7533653378192712	project/CMakeFiles/GP1_Raytracer.dir/src/main.cpp.obj	180f65fd9884b86e
+17	1313	7533653379376954	project/CMakeFiles/GP1_Raytracer.dir/src/Scene.cpp.obj	c6a6ff01b973ba1b
+11	1436	7533653380613424	project/CMakeFiles/GP1_Raytracer.dir/src/Renderer.cpp.obj	9c5ad2969a40afd
+1436	1885	7533653382072690	project/GP1_Raytracer.exe	504c3b231f2368d4
+32	1923	7533654067590091	project/CMakeFiles/GP1_Raytracer.dir/src/main.cpp.obj	180f65fd9884b86e
+1925	2783	7533654070964330	project/GP1_Raytracer.exe	504c3b231f2368d4
